@@ -34,9 +34,10 @@ api_key = st.text_input("Enter your Google API Key:", type="password", key="api_
 
 def get_pdf_text(pdf_docs):
     text = ""
-    for pdf in pdf_docs:
-        pdf_reader = PdfReader(pdf)
-        for page in pdf_reader.pages:
+    with open(pdf_docs, 'rb') as file:
+        reader = PyPDF2.PdfReader(file)
+        for page_num in range(len(reader.pages)):
+            page = reader.pages[page_num]
             text += page.extract_text()
     return text
 
