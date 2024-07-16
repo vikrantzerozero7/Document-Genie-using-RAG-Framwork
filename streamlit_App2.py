@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 load_dotenv()
 os.getenv("AIzaSyCKeLMrUxE9lnopj3VOmY583ceOqmxBRYI")
 genai.configure(api_key=os.getenv("AIzaSyCKeLMrUxE9lnopj3VOmY583ceOqmxBRYI"))
-
+api_key = "AIzaSyCKeLMrUxE9lnopj3VOmY583ceOqmxBRYI"
 def get_pdf_text(pdf_docs):
     text = ""
     for pdf in pdf_docs:
@@ -28,7 +28,7 @@ def get_text_chunks(text):
     return chunks
 
 def get_vector_store(text_chunks):
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001",,google_api_key=api_key)
     vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
     vector_store.save_local("faiss_index")
 
@@ -42,14 +42,14 @@ def get_conversational_chain():
     Answer:
     """
 
-    model = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.3)
+    model = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.3,google_api_key=api_key)
     prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
     chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
 
     return chain
 
 def user_input(user_question):
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001",google_api_key=api_key)
     
     # Allow dangerous deserialization
     new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
